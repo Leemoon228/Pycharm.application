@@ -1,7 +1,7 @@
 # -*- coding: cp1251 -*-
 
 # import requests
-
+from program.func import *
 import threading
 import time
 import tkinter as tk
