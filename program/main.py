@@ -37,7 +37,7 @@ def create_notif():
         user_toast.show_toast(name, description,
                               duration=10,
                               threaded=True,
-                              icon_path="program/leaf2.ico")
+                              icon_path="leaf2.ico")
 
     notif = threading.Thread(target=user_notif)
     notif.start()
@@ -50,7 +50,7 @@ def show_window(icon, item):
 
 def hide_window():
     root.withdraw()
-    image = Image.open("program/leaf2.ico")
+    image = Image.open("leaf2.ico")
     menu = (item('Show', show_window), item('Quit', quit_window))
     icon = pystray.Icon("name", image, "Reminder App", menu)
     icon.run()
@@ -65,7 +65,7 @@ def quit_window(icon, item):
 root = tk.Tk()
 root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
-root.iconbitmap("program/leaf2.ico")
+root.iconbitmap("leaf2.ico")
 
 HealthReminding = threading.Thread(target=thread_function, daemon=True)
 HealthReminding.start()  # Фоновое отображение уведомлений

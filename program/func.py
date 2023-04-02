@@ -44,4 +44,4 @@ def open_body_healthcare_notif():
                       duration=10,
                       callback_on_click=open_body_healthcare,
                       threaded=True,
-                      icon_path="program/leaf2.ico")
+                      icon_path="leaf2.ico")
