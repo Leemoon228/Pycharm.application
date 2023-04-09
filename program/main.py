@@ -9,6 +9,9 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from win10toast_click import ToastNotifier
+from pystray import MenuItem as item
+import pystray
+from PIL import Image, ImageTk
 
 
 # сделать такие уведомления TODO
@@ -41,9 +44,27 @@ def create_notif():
     notif.start()
 
 
+def show_window(icon, item):
+    icon.stop()
+    root.after(0, root.deiconify())
+
+
+def hide_window():
+    root.withdraw()
+    image = Image.open("leaf2.ico")
+    menu = (item('Show', show_window), item('Quit', quit_window))
+    icon = pystray.Icon("name", image, "Reminder App", menu)
+    icon.run()
+
+
+def quit_window(icon, item):
+    icon.stop()
+    root.destroy()
+
+
 # Здесь начинается окно
 root = tk.Tk()
-root.title('Reminder App v0.01')
+root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
@@ -53,6 +74,9 @@ tabControl.add(tab2, text='Tab 2')
 tabControl.pack(expand=1, fill="both")
 filltab2(tab2)
 HealthReminding = threading.Thread(target=thread_function)
+root.iconbitmap("leaf2.ico")
+
+HealthReminding = threading.Thread(target=thread_function, daemon=True)
 HealthReminding.start()  # Фоновое отображение уведомлений
 
 canvas = tk.Canvas(tab1, width=600, height=300)
@@ -86,5 +110,7 @@ canvas.create_window(480, 80, window=entry_name)
 canvas.create_text(480, 100, text="Введите описание вашего уведомления", fill="black")
 canvas.create_window(480, 120, window=entry_def)
 canvas.create_window(480, 170, window=button1)
+
+root.protocol('WM_DELETE_WINDOW', hide_window)
 
 root.mainloop()

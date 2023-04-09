@@ -21,4 +21,5 @@ def filltab2(tab2):
                             width=10)
     example_text.set("Пример\nуведомления")
     example_btn.grid(column=0, row=0)
+    tab2canvas.create_text(480, 20, text="ඞ", fill="black")
     return
