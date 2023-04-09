@@ -2,6 +2,7 @@
 # checkout 2
 # import requests
 from program.func import *
+from program.tab2 import filltab2
 import threading
 import time
 import tkinter as tk
@@ -44,16 +45,22 @@ def create_notif():
 root = tk.Tk()
 root.title('Reminder App v0.01')
 root.geometry('+%d+%d' % (650, 340))
-
+tabControl = ttk.Notebook(root)
+tab1 = ttk.Frame(tabControl)
+tab2 = ttk.Frame(tabControl)
+tabControl.add(tab1, text='Tab 1')
+tabControl.add(tab2, text='Tab 2')
+tabControl.pack(expand=1, fill="both")
+filltab2(tab2)
 HealthReminding = threading.Thread(target=thread_function)
 HealthReminding.start()  # Фоновое отображение уведомлений
 
-canvas = tk.Canvas(root, width=600, height=300)
+canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
 
 # Buttons
 example_text = tk.StringVar()
-example_btn = tk.Button(root, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
+example_btn = tk.Button(tab1, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
                         font="Raleway",
                         bg="#20bebe",
                         fg="white",
@@ -62,13 +69,13 @@ example_btn = tk.Button(root, textvariable=example_text, command=lambda: open_bo
 example_text.set("Пример\nуведомления")
 example_btn.grid(column=0, row=0)
 
-entry_name = tk.Entry(root)
-entry_def = tk.Entry(root)
+entry_name = tk.Entry(tab1)
+entry_def = tk.Entry(tab1)
 button1 = tk.Button(text='Create your notification', command=create_notif, font="Raleway", bg="#20bebe", fg="white")
 
 times = [0, 1, 3, 5, 10, 15, 30, 60]
 box_text = IntVar()
-combobox = ttk.Combobox(root, textvariable=box_text)
+combobox = ttk.Combobox(tab1, textvariable=box_text)
 combobox['state'] = 'readonly'
 combobox['values'] = times
 
