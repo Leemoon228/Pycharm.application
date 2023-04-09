@@ -2,7 +2,7 @@
 # checkout 2
 # import requests
 from program.func import *
-from program.tab2 import filltab2
+from program.tabs import filltab2, filltab3
 import threading
 import time
 import tkinter as tk
@@ -14,10 +14,8 @@ import pystray
 from PIL import Image, ImageTk
 
 
-# сделать такие уведомления TODO
+# TODO переделать уведомления на другую библиотеку
 # https://stackoverflow.com/questions/65871197/python-winrt-windows-toast-notification-get-input-as-a-variable
-
-
 # Используемые функции (привязанные к кнопкам)
 
 def create_notif():
@@ -52,7 +50,7 @@ def show_window(icon, item):
 def hide_window():
     root.withdraw()
     image = Image.open("leaf2.ico")
-    menu = (item('Show', show_window), item('Quit', quit_window))
+    menu = (pystray.MenuItem('Show', show_window, default=True), pystray.MenuItem('Quit', quit_window))
     icon = pystray.Icon("name", image, "Reminder App", menu)
     icon.run()
 
@@ -66,15 +64,18 @@ def quit_window(icon, item):
 root = tk.Tk()
 root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
+root.iconbitmap("leaf2.ico")
+
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)
-tabControl.add(tab1, text='Tab 1')
-tabControl.add(tab2, text='Tab 2')
-tabControl.pack(expand=1, fill="both")
+tab3 = ttk.Frame(tabControl)
+tabControl.add(tab1, text='Пример')
+tabControl.add(tab2, text='Помидорки')
+tabControl.add(tab3, text='Стикеры')
+tabControl.pack(expand=2, fill="both")
 filltab2(tab2)
-HealthReminding = threading.Thread(target=thread_function)
-root.iconbitmap("leaf2.ico")
+filltab3(tab3)
 
 HealthReminding = threading.Thread(target=thread_function, daemon=True)
 HealthReminding.start()  # Фоновое отображение уведомлений

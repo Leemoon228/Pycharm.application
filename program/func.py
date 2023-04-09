@@ -26,7 +26,7 @@ def open_eyes_healthcare_notif():
                      duration=8,
                      callback_on_click=open_eyes_healthcare,
                      threaded=True,
-                     icon_path="program/leaf2.ico")
+                     icon_path="leaf2.ico")
 
 
 def open_body_healthcare():

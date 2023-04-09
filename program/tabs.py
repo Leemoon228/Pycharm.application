@@ -13,7 +13,7 @@ def filltab2(tab2):
     tab2canvas.grid(columnspan=3, rowspan=3)
     # Buttons
     example_text = tk.StringVar()
-    example_btn = tk.Button(tab2, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
+    example_btn = tk.Button(tab2, textvariable=example_text,
                             font="Raleway",
                             bg="#20bebe",
                             fg="white",
@@ -23,3 +23,8 @@ def filltab2(tab2):
     example_btn.grid(column=0, row=0)
     tab2canvas.create_text(480, 20, text="ඞ", fill="black")
     return
+
+
+def filltab3(tab3):
+    tab2canvas = tk.Canvas(tab3, width=600, height=300)
+    tab2canvas.grid(columnspan=4, rowspan=2)
