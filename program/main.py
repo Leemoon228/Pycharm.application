@@ -1,5 +1,6 @@
 # -*- coding: cp1251 -*-
-# checkout 2
+# checkout 3
+# test string
 # import requests
 from program.func import *
 from program.tabs import filltab2, filltab3
