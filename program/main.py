@@ -67,6 +67,7 @@ root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
 root.iconbitmap("leaf2.ico")
 
+
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)
@@ -84,12 +85,13 @@ HealthReminding.start()  # Фоновое отображение уведомлений
 canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
 
+
 # Buttons
 example_text = tk.StringVar()
 example_btn = tk.Button(tab1, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
                         font="Raleway",
-                        bg="#20bebe",
-                        fg="white",
+                        bg="#2e5339",
+                        fg="#C3E8BD",
                         height=2,
                         width=10)
 example_text.set("Пример\nуведомления")
@@ -97,7 +99,7 @@ example_btn.grid(column=0, row=0)
 
 entry_name = tk.Entry(tab1)
 entry_def = tk.Entry(tab1)
-button1 = tk.Button(text='Create your notification', command=create_notif, font="Raleway", bg="#20bebe", fg="white")
+button1 = tk.Button(text='Create your notification', command=create_notif, font="Raleway", bg="#2e5339", fg="#C3E8BD")
 
 times = [0, 1, 3, 5, 10, 15, 30, 60]
 box_text = IntVar()
