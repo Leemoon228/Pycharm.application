@@ -84,6 +84,7 @@ HealthReminding.start()  # Фоновое отображение уведомлений
 
 canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
+canvas.configure(bg='#C3E8BD')
 
 
 # Buttons

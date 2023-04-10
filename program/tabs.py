@@ -11,13 +11,14 @@ from PIL import ImageTk, Image
 
 def filltab2(tab2):
     tab2canvas = tk.Canvas(tab2, width=600, height=300)
+    tab2canvas.configure(bg='#C3E8BD')
     tab2canvas.grid(columnspan=3, rowspan=3)
     # Buttons
     example_text = tk.StringVar()
     example_btn = tk.Button(tab2, textvariable=example_text,
                             font="Raleway",
-                            bg="#20bebe",
-                            fg="white",
+                            bg="#2e5339",
+                            fg="#C3E8BD",
                             height=2,
                             width=10)
     example_text.set("Пример\nуведомления")
@@ -29,7 +30,7 @@ def filltab2(tab2):
 def filltab3(tab3):
     tab2canvas = tk.Canvas(tab3, width=600, height=300)
     tab2canvas.grid(columnspan=4, rowspan=2)
-
+    tab2canvas.configure(bg='#C3E8BD')
     stick_img = ImageTk.PhotoImage(Image.open("sticker.jpg"))
     label = Label(tab3, image=stick_img)
     label.image = stick_img
