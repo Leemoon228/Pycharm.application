@@ -2,6 +2,7 @@ from win10toast_click import ToastNotifier
 import threading
 import time
 import webbrowser
+from program.func import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
@@ -21,9 +22,16 @@ def filltab2(tab2):
                             fg="#C3E8BD",
                             height=2,
                             width=10)
-    example_text.set("Пример\nуведомления")
-    example_btn.grid(column=0, row=0)
-    tab2canvas.create_text(480, 20, text="ඞ", fill="black")
+    example_text.set("Включить\nтаймер")
+    example_btn.grid(column=1, row=2)
+    tab2canvas.create_text(300, 20, text="Уход за глазами это очень важно и многие об этом забывают, \nмы предлагаем Вам попробовать поработать в формате '25 минут работы / 5 минут отдыха'", fill="black")
+    tab2canvas.create_text(300, 40, text="Включив таймер, пойдет отсчет 25 минут, затем вам высветится напоминание, что стоит сделать перерыв", fill="black")
+    tab2canvas.create_text(300, 50,
+                           text="Вы можете сделать предложенную нами зарядку для глаз или просто насладиться видом за окном",
+                           fill="black")
+    tab2canvas.create_text(300, 80,
+                           text="здесь может быть анимация (просто украденная или Полина нарисует) с простой зарядочкой",
+                           fill="black")
     return
 
 
