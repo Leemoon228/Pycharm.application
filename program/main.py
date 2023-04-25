@@ -19,28 +19,21 @@ from PIL import Image, ImageTk
 # https://stackoverflow.com/questions/65871197/python-winrt-windows-toast-notification-get-input-as-a-variable
 # Используемые функции (привязанные к кнопкам)
 
-def create_notif():
+def user_custom_notif():
     name = entry_name.get()
     description = entry_def.get()
-    user_toast = ToastNotifier()
+
     if name == "" or description == "":
+        user_toast = ToastNotifier()
         user_toast.show_toast("Вы неправильно указали данные для уведомления",
                               "Должны быть указаны название, описание и длительность",
                               duration=10,
                               threaded=True,
-                              icon_path="leaf3.ico")
+                              icon_path=notif_icon_path)
         return
-
-    def user_notif():
-        seconds = box_text.get()
-        time.sleep(seconds)
-        user_toast.show_toast(name, description,
-                              duration=10,
-                              threaded=True,
-                              icon_path="leaf2.ico")
-
-    notif = threading.Thread(target=user_notif)
-    notif.start()
+    else:
+        notif_create(name, description, icon=notif_icon_path, delay=box_text.get())
+    return
 
 
 def show_window(icon, item):
@@ -67,7 +60,6 @@ root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
 root.iconbitmap("leaf2.ico")
 
-
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)
@@ -86,7 +78,6 @@ canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
 canvas.configure(bg='#C3E8BD')
 
-
 # Buttons
 example_text = tk.StringVar()
 example_btn = tk.Button(tab1, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
@@ -100,7 +91,8 @@ example_btn.grid(column=0, row=0)
 
 entry_name = tk.Entry(tab1)
 entry_def = tk.Entry(tab1)
-button1 = tk.Button(text='Create your notification', command=create_notif, font="Raleway", bg="#2e5339", fg="#C3E8BD")
+button1 = tk.Button(text='Create your notification', command=user_custom_notif, font="Raleway", bg="#2e5339",
+                    fg="#C3E8BD")
 
 times = [0, 1, 3, 5, 10, 15, 30, 60]
 box_text = IntVar()

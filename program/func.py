@@ -9,13 +9,15 @@ notif_icon_path = "leaf3.ico"
 def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0):
     toast = ToastNotifier()
     if delay != 0:
-        def func(sleep_time):
+        def func(sleep_time, notif):
             time.sleep(sleep_time)
-            toast.show_toast()
-        thread = threading.Thread(target=func(delay), daemon=True)
+            notif.show_toast(title, description, duration=duration, threaded=True, icon_path=icon)
+        thread = threading.Thread(target=func, args=[delay, toast],  daemon=True)
         thread.start()
+        return
     else:
         toast.show_toast(title, description, duration=duration, threaded=True, icon_path=icon)
+    return
 
 
 def thread_function():
