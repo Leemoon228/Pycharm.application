@@ -3,6 +3,20 @@ import threading
 import time
 import webbrowser
 
+notif_icon_path = "leaf3.ico"
+
+
+def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0):
+    toast = ToastNotifier()
+    if delay != 0:
+        def func(sleep_time):
+            time.sleep(sleep_time)
+            toast.show_toast()
+        thread = threading.Thread(target=func(delay), daemon=True)
+        thread.start()
+    else:
+        toast.show_toast(title, description, duration=duration, threaded=True, icon_path=icon)
+
 
 def thread_function():
     while True:
@@ -26,7 +40,7 @@ def open_eyes_healthcare_notif():
                      duration=8,
                      callback_on_click=open_eyes_healthcare,
                      threaded=True,
-                     icon_path="leaf2.ico")
+                     icon_path="leaf3.ico")
 
 
 def open_body_healthcare():
@@ -44,4 +58,4 @@ def open_body_healthcare_notif():
                       duration=10,
                       callback_on_click=open_body_healthcare,
                       threaded=True,
-                      icon_path="leaf2.ico")
+                      icon_path="leaf3.ico")

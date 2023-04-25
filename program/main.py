@@ -28,7 +28,7 @@ def create_notif():
                               "Должны быть указаны название, описание и длительность",
                               duration=10,
                               threaded=True,
-                              icon_path="leaf2.ico")
+                              icon_path="leaf3.ico")
         return
 
     def user_notif():
