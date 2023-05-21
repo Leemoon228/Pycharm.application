@@ -13,25 +13,27 @@ from PIL import ImageTk, Image
 def filltab2(tab2):
     tab2canvas = tk.Canvas(tab2, width=600, height=300)
     tab2canvas.configure(bg='#C3E8BD')
-    tab2canvas.grid(columnspan=3, rowspan=3)
+    tab2canvas.grid(columnspan=3, rowspan=4)
     # Buttons
-    example_text = tk.StringVar()
-    example_btn = tk.Button(tab2, textvariable=example_text,
-                            font="Raleway",
-                            bg="#2e5339",
-                            fg="#C3E8BD",
-                            height=2,
-                            width=10)
-    example_text.set("Включить\nтаймер")
-    example_btn.grid(column=1, row=2)
-    tab2canvas.create_text(300, 20, text="Уход за глазами это очень важно и многие об этом забывают, \nмы предлагаем Вам попробовать поработать в формате '25 минут работы / 5 минут отдыха'", fill="black")
-    tab2canvas.create_text(300, 40, text="Включив таймер, пойдет отсчет 25 минут, затем вам высветится напоминание, что стоит сделать перерыв", fill="black")
-    tab2canvas.create_text(300, 50,
-                           text="Вы можете сделать предложенную нами зарядку для глаз или просто насладиться видом за окном",
-                           fill="black")
-    tab2canvas.create_text(300, 80,
-                           text="здесь может быть анимация (просто украденная или Полина нарисует) с простой зарядочкой",
-                           fill="black")
+    start_btn = tk.Button(tab2, text="Старт",
+                          font="Bahnschrift",
+                          bg="#2e5339",
+                          fg="#C3E8BD",
+                          height=1,
+                          width=7)
+    start_btn.grid(column=1, row=0)
+    pause_btn = tk.Button(tab2, text="Пауза",
+                          font="Bahnschrift",
+                          bg="#2e5339",
+                          fg="#C3E8BD",
+                          height=1,
+                          width=7)
+    pause_btn.grid(column=2, row=0)
+    stop_btn = tk.Button(tab2, text="Стоп",     font="Bahnschrift",   bg="#2e5339", fg="#C3E8BD",height=1, width=7)
+    stop_btn.grid(column=0, row=3)
+
+    heading_lbl = ttk.Label(tab2, text="Помидорковый таймер", style="Text.TLabel")
+    heading_lbl.grid(column=1, row=0, sticky="n", pady="10")
     return
 
 

@@ -39,6 +39,7 @@ def user_custom_notif():
 def show_window(icon, item):
     icon.stop()
     root.after(0, root.deiconify())
+    root.focus_force()
 
 
 def hide_window():
@@ -59,6 +60,16 @@ root = tk.Tk()
 root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
 root.iconbitmap("leaf2.ico")
+# Определение тем (стилей элементов)
+style = ttk.Style()
+style.configure(
+    "Text.TLabel",
+    foreground="black",
+    font="Bahnschrift",
+    background="#C3E8BD",
+    fontsize=14
+)
+
 
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
@@ -81,18 +92,17 @@ canvas.configure(bg='#C3E8BD')
 # Buttons
 example_text = tk.StringVar()
 example_btn = tk.Button(tab1, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
-                        font="Raleway",
+                        font="Bahnschrift",
                         bg="#2e5339",
                         fg="#C3E8BD",
                         height=2,
-                        width=10)
+                        width=11)
 example_text.set("Пример\nуведомления")
 example_btn.grid(column=0, row=0)
 
 entry_name = tk.Entry(tab1)
 entry_def = tk.Entry(tab1)
-button1 = tk.Button(text='Create your notification', command=user_custom_notif, font="Raleway", bg="#2e5339",
-                    fg="#C3E8BD")
+button1 = tk.Button(text='Create your notification', command=user_custom_notif, font="Bahnschrift", bg="#2e5339", fg="#C3E8BD")
 
 times = [0, 1, 3, 5, 10, 15, 30, 60]
 box_text = IntVar()
@@ -100,11 +110,11 @@ combobox = ttk.Combobox(tab1, textvariable=box_text)
 combobox['state'] = 'readonly'
 combobox['values'] = times
 
-canvas.create_text(480, 20, text="Через сколько секунд", fill="black")
+canvas.create_text(480, 20, text="Через сколько секунд", fill="black", font="Bahnschrift")
 canvas.create_window(480, 40, window=combobox)
-canvas.create_text(480, 60, text="Введите название вашего уведомления", fill="black")
+canvas.create_text(480, 60, text="Введите название вашего уведомления", fill="black", font="Bahnschrift")
 canvas.create_window(480, 80, window=entry_name)
-canvas.create_text(480, 100, text="Введите описание вашего уведомления", fill="black")
+canvas.create_text(480, 100, text="Введите описание вашего уведомления", fill="black", font="Bahnschrift")
 canvas.create_window(480, 120, window=entry_def)
 canvas.create_window(480, 170, window=button1)
 
