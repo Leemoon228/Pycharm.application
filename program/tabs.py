@@ -1,3 +1,5 @@
+import concurrent.futures
+
 from win10toast_click import ToastNotifier
 import threading
 import time
@@ -8,7 +10,7 @@ from tkinter import ttk
 from tkinter import *
 from win10toast_click import ToastNotifier
 from PIL import ImageTk, Image
-
+import sqlite3
 
 def filltab2(tab2):
     tab2canvas = tk.Canvas(tab2, width=600, height=300)
@@ -38,10 +40,22 @@ def filltab2(tab2):
 
 
 def filltab3(tab3):
+    conn = sqlite3.connect('tasks.db')
     tab2canvas = tk.Canvas(tab3, width=600, height=300)
-    tab2canvas.grid(columnspan=4, rowspan=2)
+    rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS')
+    tab2canvas.grid(columnspan=3, rowspan=rowspan.fetchone()[0]+2)
+    Label(tab3, text="Название").grid(row=0, column=0)
+    Label(tab3, text="Истекает до").grid(row=0, column=1)
+    Label(tab3, text="Уведомлять").grid(row=0, column=2)
+    selection = conn.execute('SELECT * FROM TASKS')
+    i=1
+    for name in selection:
+        for j in range(len(name)):
+            e = Entry(tab3, width=10, fg='blue')
+            e.grid(row=i, column=j)
+            e.insert(END, name[j])
+        i=i+1
     tab2canvas.configure(bg='#C3E8BD')
-    stick_img = ImageTk.PhotoImage(Image.open("sticker.jpg"))
-    label = Label(tab3, image=stick_img)
-    label.image = stick_img
-    label.grid(row=0, columnspan=6)
+    createtaskbtn = Button(tab3, text="Создать задачу")
+
+

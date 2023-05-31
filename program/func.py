@@ -2,6 +2,8 @@ from win10toast_click import ToastNotifier
 import threading
 import time
 import webbrowser
+import sqlite3
+from sqlite3 import Error
 
 notif_icon_path = "leaf3.ico"
 
@@ -61,3 +63,15 @@ def open_body_healthcare_notif():
                       callback_on_click=open_body_healthcare,
                       threaded=True,
                       icon_path="leaf3.ico")
+
+def create_connection(db_file):
+    """ create a database connection to a SQLite database """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
