@@ -79,8 +79,7 @@ tabControl.add(tab1, text='Пример')
 tabControl.add(tab2, text='Помидорки')
 tabControl.add(tab3, text='Стикеры')
 tabControl.pack(expand=2, fill="both")
-filltab2(tab2)
-filltab3(tab3)
+
 
 HealthReminding = threading.Thread(target=thread_function, daemon=True)
 HealthReminding.start()  # Фоновое отображение уведомлений
@@ -118,6 +117,8 @@ canvas.create_text(480, 100, text="Введите описание вашего уведомления", fill="b
 canvas.create_window(480, 120, window=entry_def)
 canvas.create_window(480, 170, window=button1)
 
+filltab2(tab2)
+filltab3(tab3)
 root.protocol('WM_DELETE_WINDOW', hide_window)
 
 root.mainloop()

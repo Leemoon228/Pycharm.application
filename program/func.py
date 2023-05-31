@@ -4,6 +4,8 @@ import time
 import webbrowser
 import sqlite3
 from sqlite3 import Error
+from tkinter import *
+from tkinter.ttk import *
 
 notif_icon_path = "leaf3.ico"
 
@@ -75,3 +77,33 @@ def create_connection(db_file):
     finally:
         if conn:
             conn.close()
+
+def openNewWindow(tab):
+    # Toplevel object which will
+    # be treated as a new window
+    newWindow = Toplevel(tab)
+
+    # sets the title of the
+    # Toplevel widget
+    newWindow.title("New Window")
+
+    # sets the geometry of toplevel
+    newWindow.geometry('+%d+%d' % (650, 340))
+    conn = sqlite3.connect('tasks.db')
+    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas.grid(rowspan=2, columnspan=3)
+    taskname = Entry(windowCanvas, width=30).grid(row=1, column=0)
+    date = Entry(windowCanvas, width=30).grid(row=1, column=1)
+    enabled = IntVar()
+    notify = Checkbutton(windowCanvas, variable=enabled).grid(row=1, column=3)
+    #Button(newWindow, text="добавить", command=insertDB(taskname.get(), date.get(), enabled)).grid(row=2, column=2)
+    # A Label widget to show in toplevel
+
+
+def insertDB(taskname, date, enabled):
+    query='INSERT INTO tasks VALUES (?,?,?)'
+    return
+
+
+
+
