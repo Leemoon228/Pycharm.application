@@ -11,25 +11,8 @@ from tkinter import *
 from win10toast_click import ToastNotifier
 from PIL import ImageTk, Image
 import sqlite3
-import re
+
 from datetime import datetime
-
-def validate(new_val):
-    return re.match("^\d{0,2}\:[012345]?[0123456789]?$", new_val) is not None
-
-
-def timer_start(duration_entry, sleep_entry, timer):
-    minutes, seconds = int(duration_entry.get()[0:2]), int(duration_entry.get()[2:])
-    duration_entry.config(state="disabled")
-    sleep_entry.config(state="disabled")
-    timer.daemon = True
-def label_change():
-    counter = 0
-
-
-
-
-
 
 
 def filltab2(tab2):
@@ -84,7 +67,7 @@ def filltab2(tab2):
     tomato4_lbl.image = tomato_img
     tomato4_lbl.grid(column=2, row=0, sticky="se", pady=20, padx=30)
 
-    Timer = threading.Timer(1, label_change, args=[CurrentTimer_lbl, CurrentTimerTime_lbl])
+    Tomato_Timer = [RepeatTimer(1, label_change)]
 
     # Buttons
     start_btn = tk.Button(tab2, text="Старт",
@@ -92,19 +75,21 @@ def filltab2(tab2):
                           bg="#2e5339",
                           fg="#C3E8BD",
                           height=1,
-                          width=7, command=lambda: timer_start(TimeDuration_entry, TimeSleeping_entry, Timer))
+                          width=7,
+                          command=lambda: timer_start(TimeDuration_entry, TimeSleeping_entry, Tomato_Timer[0],
+                                                      CurrentTimer_lbl, CurrentTimerTime_lbl))
     start_btn.grid(column=1, row=0, sticky="n", pady="30")
-    pause_btn = tk.Button(tab2, text="Пауза",
+    pause_btn = tk.Button(tab2, text="Стоп",
                           font="Bahnschrift",
                           bg="#2e5339",
                           fg="#C3E8BD",
                           height=1,
-                          width=7)
+                          width=7,
+                          command=lambda: timer_stop(Tomato_Timer, label_change, TimeDuration_entry,
+                                                     TimeSleeping_entry))
     pause_btn.grid(column=2, row=0, sticky="n", pady="30")
-
-    stop_btn = tk.Button(tab2, text="Стоп", font="Bahnschrift", bg="#2e5339", fg="#C3E8BD", height=1, width=7)
-    stop_btn.grid(column=0, row=3, sticky="sw", pady="10", padx="30")
-
+    # stop_btn = tk.Button(tab2, text="Стоп", font="Bahnschrift", bg="#2e5339", fg="#C3E8BD", height=1, width=7)
+    # stop_btn.grid(column=0, row=3, sticky="sw", pady="10", padx="30")
     return
 
 
@@ -115,7 +100,7 @@ def filltab3(tab3):
     rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS').fetchone()[0]
     tab3.configure(relief=FLAT, bg="#C3E8BD")
     #create canvas in tab3 frame
-    tab2canvas = tk.Canvas(tab3, bg="#C3E8BD", relief=FLAT, highlightthickness=0)
+    tab2canvas = tk.Canvas(tab3, bg="#C3E8BD", relief=FLAT, highlightthickness=0, height=250)
     tab2canvas.grid(row=1, columnspan=3, sticky='news')
     #create scrollbar in tab3 frame
     scroll = Scrollbar(tab3, orient="vertical", command=tab2canvas.yview, relief=FLAT)

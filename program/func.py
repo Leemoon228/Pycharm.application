@@ -1,4 +1,3 @@
-import tkcalendar
 from win10toast_click import ToastNotifier
 import threading
 import time
@@ -7,10 +6,105 @@ import sqlite3
 from sqlite3 import Error
 from tkinter import *
 from tkinter.ttk import *
+from threading import Timer
+import tkcalendar
+import tkinter as tk
+from PIL import Image, ImageTk
+from itertools import count
 from tkcalendar import Calendar
 from datetime import date
+import re
 from datetime import datetime
 notif_icon_path = "leaf3.ico"
+
+
+def validate(new_val):
+    return re.match("^\d{0,2}\:[012345]?[0123456789]?$", new_val) is not None
+
+
+def timer_stop(timer, func, duration_entry, sleep_entry):
+    timer[0].cancel()
+    timer[0] = RepeatTimer(1, func)
+    duration_entry.config(state="normal")
+    sleep_entry.config(state="normal")
+
+
+def timer_start(duration_entry, sleep_entry, timer, current_text_lbl, current_time_lbl):
+    if timer.is_alive():
+        return
+    dur_time = time_from_str(duration_entry.get())
+    sleep_time = time_from_str(sleep_entry.get())
+    duration_entry.config(state="disabled")
+    sleep_entry.config(state="disabled")
+    timer.daemon = True
+    current_time_lbl.config(text=(str(dur_time // 60) + ":" +
+                                  ("00" if ((str(dur_time % 60) ) == "0") else (str(dur_time % 60)))))
+    timer.args = [current_text_lbl, current_time_lbl, dur_time, sleep_time]
+    timer.start()
+
+
+def label_change(text_lbl, time_lbl, base_dur_time=1800, base_sleep_time=300):
+    cur_dur_time = time_from_str(time_lbl.cget("text"))
+    cur_dur_time -= 1
+    if cur_dur_time <= 0:
+        if text_lbl.cget("text") == "Работа":
+            notif_create("Пора отдохнуть",
+                         "Помидорка работы прошла, пора взять перерыв и вернуться к работе после него")
+            text_lbl.config(text="Отдых")
+            time_lbl.config(text=(str(base_sleep_time // 60) + ":" +
+                                  ("00" if ((str(base_sleep_time % 60) ) == "0") else (str(base_sleep_time % 60)))))
+        else:
+            notif_create("Пора работать",
+                         "Помидорка отдыха прошла, возвращаемся к работе с новыми силами")
+            text_lbl.config(text="Работа")
+            time_lbl.config(text=(str(base_dur_time // 60) + ":" +
+                                  ("00" if ((str(base_dur_time % 60) ) == "0") else (str(base_dur_time % 60)))))
+    else:
+        time_lbl.config(text=(str(cur_dur_time // 60) + ":" +
+                              ("00" if ((str(cur_dur_time % 60) ) == "0") else (str(cur_dur_time % 60)))))
+
+
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
+
+
+class ImageLabel(tk.Label):
+    """a label that displays images, and plays them if they are gifs"""
+    def load(self, im):
+        if isinstance(im, str):
+            im = Image.open(im)
+        self.loc = 0
+        self.frames = []
+
+        try:
+            for i in count(1):
+                self.frames.append(ImageTk.PhotoImage(im.copy()))
+                im.seek(i)
+        except EOFError:
+            pass
+
+        try:
+            self.delay = im.info['duration']
+        except:
+            self.delay = 100
+
+        if len(self.frames) == 1:
+            self.config(image=self.frames[0])
+        else:
+            self.next_frame()
+
+    def unload(self):
+        self.config(image="")
+        self.frames = None
+
+    def next_frame(self):
+        if self.frames:
+            self.loc += 1
+            self.loc %= len(self.frames)
+            self.config(image=self.frames[self.loc])
+            self.after(self.delay, self.next_frame)
 
 
 def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0):
@@ -19,7 +113,8 @@ def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0)
         def func(sleep_time, notif):
             time.sleep(sleep_time)
             notif.show_toast(title, description, duration=duration, threaded=True, icon_path=icon)
-        thread = threading.Thread(target=func, args=[delay, toast],  daemon=True)
+
+        thread = threading.Thread(target=func, args=[delay, toast], daemon=True)
         thread.start()
         return
     else:
@@ -27,7 +122,18 @@ def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0)
     return
 
 
-def thread_function(delay_eyes=30, delay_body=40):
+def time_from_str(time_string):
+    first = time_string[0:time_string.find(':')]
+    if first == '':
+        first = "0"
+    second = time_string[time_string.find(':') + 1:]
+    if second == '':
+        second = "0"
+    time_in_seconds = int(first) * 60 + int(second)
+    return time_in_seconds
+
+
+def thread_function(delay_eyes=300, delay_body=600):
     while True:
         time.sleep(delay_eyes)
         open_eyes_healthcare_notif()
@@ -69,6 +175,7 @@ def open_body_healthcare_notif():
                       threaded=True,
                       icon_path="leaf3.ico")
 
+
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
     conn = None
@@ -80,6 +187,7 @@ def create_connection(db_file):
     finally:
         if conn:
             conn.close()
+
 
 def openNewWindow(tab):
     # Toplevel object which will

@@ -15,26 +15,6 @@ import pystray
 from PIL import Image, ImageTk
 
 
-# TODO переделать уведомления на другую библиотеку
-# https://stackoverflow.com/questions/65871197/python-winrt-windows-toast-notification-get-input-as-a-variable
-# Используемые функции (привязанные к кнопкам)
-
-def user_custom_notif():
-    name = entry_name.get()
-    description = entry_def.get()
-
-    if name == "" or description == "":
-        user_toast = ToastNotifier()
-        user_toast.show_toast("Вы неправильно указали данные для уведомления",
-                              "Должны быть указаны название, описание и длительность",
-                              duration=10,
-                              threaded=True,
-                              icon_path=notif_icon_path)
-        return
-    else:
-        notif_create(name, description, icon=notif_icon_path, delay=box_text.get())
-    return
-
 
 def show_window(icon, item):
     icon.stop()
@@ -60,6 +40,7 @@ root = tk.Tk()
 root.title('Reminder App v0.02')
 root.geometry('+%d+%d' % (650, 340))
 root.iconbitmap("leaf2.ico")
+root.resizable(False, False)
 # Определение тем (стилей элементов)
 style = ttk.Style()
 style.configure(
@@ -85,34 +66,43 @@ canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
 canvas.configure(bg='#C3E8BD')
 
+check = (tab1.register(validate), "%P")
+
+#Window GIF
+Window_lbl = ImageLabel(tab1)
+Window_lbl.grid(row=0, column=2, columnspan=3, sticky="e", padx=5)
+Window_lbl.configure(bg="#C3E8BD")
+Window_lbl.load('window.gif')
+
 # Buttons
-example_text = tk.StringVar()
-example_btn = tk.Button(tab1, textvariable=example_text, command=lambda: open_body_healthcare_notif(),
+example_btn = tk.Button(tab1, text="Проверка работы\nуведомлений", command=lambda: notif_create("Проверка уведомления",
+                                                 "Если вы увидели это увдомление, то у вас всё работает прекрасно"),
                         font="Bahnschrift",
                         bg="#2e5339",
                         fg="#C3E8BD",
                         height=2,
-                        width=11)
-example_text.set("Пример\nуведомления")
-example_btn.grid(column=0, row=0)
+                        width=15)
 
-entry_name = tk.Entry(tab1)
-entry_def = tk.Entry(tab1)
-button1 = tk.Button(text='Create your notification', command=user_custom_notif, font="Bahnschrift", bg="#2e5339", fg="#C3E8BD")
 
-times = [0, 1, 3, 5, 10, 15, 30, 60]
-box_text = IntVar()
-combobox = ttk.Combobox(tab1, textvariable=box_text)
-combobox['state'] = 'readonly'
-combobox['values'] = times
 
-canvas.create_text(480, 20, text="Через сколько секунд", fill="black", font="Bahnschrift")
-canvas.create_window(480, 40, window=combobox)
-canvas.create_text(480, 60, text="Введите название вашего уведомления", fill="black", font="Bahnschrift")
-canvas.create_window(480, 80, window=entry_name)
-canvas.create_text(480, 100, text="Введите описание вашего уведомления", fill="black", font="Bahnschrift")
-canvas.create_window(480, 120, window=entry_def)
-canvas.create_window(480, 170, window=button1)
+Time_delayed_lbl = ttk.Label(tab1, text="Время до\nуведомления", style="Text.TLabel", justify="center")
+Time_delayed_entry = tk.Entry(tab1, validate="key", validatecommand=check, width=5,
+                              font=("Bahnschrift", 15), background="#C3E8BD", justify="center",
+                              selectborderwidth="0")
+Time_delayed_entry.insert(0, "00:30")
+
+button1 = tk.Button(text='Своё уведомление',
+                    command=lambda: notif_create("Ваше уведомление",
+                                                 "Вы откладывали уведомление чтобы о чём-то не забыть. Самое время чтобы вспомнить об этом",
+                                                 delay=time_from_str(Time_delayed_entry.get())),
+                    font="Bahnschrift", bg="#2e5339", fg="#C3E8BD")
+
+
+canvas.create_window(90, 190, window=Time_delayed_lbl)
+canvas.create_window(90, 230, window=Time_delayed_entry)
+canvas.create_window(90, 270, window=button1)
+canvas.create_window(300, 260, window=example_btn)
+
 
 filltab2(tab2)
 filltab3(tab3)
