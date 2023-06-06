@@ -108,11 +108,11 @@ def filltab3(tab3):
     tab2canvas.configure(yscrollcommand=scroll.set)
     l1 =Label(tab3, text="Название", width=27, bg="#C3E8BD")
     l1.grid(row=0, column=0)
-    l2 =Label(tab3, text="Истекает до", width=27, bg="#C3E8BD")
+    l2 =Label(tab3, text="Дедлайн", width=27, bg="#C3E8BD")
     l2.grid(row=0, column=1)
-    l3 =Label(tab3, text="Уведомлять", width=27, bg="#C3E8BD")
+    l3 =Label(tab3, text="Выполнено:", width=27, bg="#C3E8BD")
     l3.grid(row=0, column=2)
-    selection = conn.execute('SELECT * FROM TASKS')
+    selection = conn.execute('SELECT * FROM TASKS ORDER BY NOROFY ASC')
     i=1
     table = Frame(tab2canvas)
     for name in selection:
@@ -120,9 +120,9 @@ def filltab3(tab3):
              e = Entry(table, width=35, fg='blue', relief=tk.RIDGE)
              e.grid(row=i, column=j)
              if name[j]==0:
-                e.insert(END, "не уведомлять")
+                e.insert(END, "Не выполнено")
              elif name[j]==1:
-                e.insert(END, "уведомлять")
+                e.insert(END, "Выполнено")
              else:
                 e.insert(END, name[j])
         i=i+1
@@ -130,6 +130,10 @@ def filltab3(tab3):
     tab2canvas.create_window((0,0), window=table, anchor=NW)
     tab2canvas.configure(scrollregion=tab2canvas.bbox(ALL))
     createtaskbtn = Button(tab3, text="Создать задачу", command=lambda: openNewWindow(tab3))
-    createtaskbtn.grid(row=rowspan+1, columnspan=3)
+    createtaskbtn.grid(row=rowspan+1, column=0)
+    edittaskbtn = Button(tab3, text="Отметить задачу выполненной", command=lambda: openEditWindow(tab3, conn))
+    edittaskbtn.grid(row=rowspan+1, column=2)
+    deltaskbtn = Button(tab3, text="удалить задачу", command=lambda: openDelWindow(tab3, conn))
+    deltaskbtn.grid(row=rowspan+1, column=1)
 
 
