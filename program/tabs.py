@@ -111,18 +111,24 @@ def filltab2(tab2):
 def filltab3(tab3):
     conn = sqlite3.connect('tasks.db')
     tab2canvas = tk.Canvas(tab3, width=600, height=300)
-    rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS')
-    tab2canvas.grid(columnspan=3, rowspan=rowspan.fetchone()[0] + 2)
+    rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS').fetchone()[0]
+    tab2canvas.grid(columnspan=3, rowspan=rowspan+2)
     Label(tab3, text="Название").grid(row=0, column=0)
     Label(tab3, text="Истекает до").grid(row=0, column=1)
     Label(tab3, text="Уведомлять").grid(row=0, column=2)
     selection = conn.execute('SELECT * FROM TASKS')
-    i = 1
+    i=1
     for name in selection:
         for j in range(len(name)):
             e = Entry(tab3, width=10, fg='blue')
             e.grid(row=i, column=j)
-            e.insert(END, name[j])
-        i = i + 1
+            if name[j]==0 or name[j]==1:
+                Checkbutton(tab3, variable=name[j]).grid(row=i, column=j)
+            else:
+             e.insert(END, name[j])
+        i=i+1
     tab2canvas.configure(bg='#C3E8BD')
-    createtaskbtn = Button(tab3, text="Создать задачу")
+    createtaskbtn = Button(tab3, text="Создать задачу", command=openNewWindow(tab3))
+    createtaskbtn.grid(row=rowspan+1, column=0)
+
+
