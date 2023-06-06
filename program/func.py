@@ -1,3 +1,4 @@
+import tkcalendar
 from win10toast_click import ToastNotifier
 import threading
 import time
@@ -6,7 +7,9 @@ import sqlite3
 from sqlite3 import Error
 from tkinter import *
 from tkinter.ttk import *
-
+from tkcalendar import Calendar
+from datetime import date
+from datetime import datetime
 notif_icon_path = "leaf3.ico"
 
 
@@ -85,24 +88,40 @@ def openNewWindow(tab):
 
     # sets the title of the
     # Toplevel widget
-    newWindow.title("New Window")
-
+    newWindow.title("Новая задача!! :3")
+    newWindow.iconbitmap("leaf2.ico")
+    newWindow.resizable(False, False)
     # sets the geometry of toplevel
     newWindow.geometry('+%d+%d' % (650, 340))
-    conn = sqlite3.connect('tasks.db')
     windowCanvas = Canvas(newWindow, width=600, height=300)
-    windowCanvas.grid(rowspan=2, columnspan=3)
-    taskname = Entry(windowCanvas, width=30).grid(row=1, column=0)
-    date = Entry(windowCanvas, width=30).grid(row=1, column=1)
+    windowCanvas.grid(rowspan=5, columnspan=1)
+    lName = Label(windowCanvas, text="Название задачи:", width=30).grid(row=0,column=0, columnspan=2)
+    taskname = Text(windowCanvas, width=30, height=1)
+    taskname.grid(row=1, column=0, columnspan=2)
+    DateSet = tkcalendar.DateEntry(windowCanvas, selectmode='day')
+    datevalid = StringVar()
+    datevalid.set("Дедлайн:")
+    lDate = Label(windowCanvas, textvariable=datevalid, width=30).grid(row=2, column=0, columnspan=2)
+    DateSet.grid(row=3, column=0, columnspan=2)
+    lNotif = Label(windowCanvas, text="Уведомлять:", width=30).grid(row=4, column=0)
     enabled = IntVar()
-    notify = Checkbutton(windowCanvas, variable=enabled).grid(row=1, column=3)
-    #Button(newWindow, text="добавить", command=insertDB(taskname.get(), date.get(), enabled)).grid(row=2, column=2)
-    # A Label widget to show in toplevel
+    notify = Checkbutton(windowCanvas, variable=enabled).grid(row=4, column=1)
+    Button(newWindow, text="добавить", command=lambda: insertDB(taskname.get("1.0", END), DateSet.get_date(), enabled.get(), datevalid, tab)).grid(row=5, column=0, columnspan=2)
 
 
-def insertDB(taskname, date, enabled):
-    query='INSERT INTO tasks VALUES (?,?,?)'
-    return
+def insertDB(taskname, DateSet, enabled, datevalid, tab):
+    my_conn=sqlite3.connect('tasks.db')
+    if DateSet<date.today():
+        datevalid.set("Неверная дата, еще раз:")
+        return print("wrong date, your date is"+DateSet.strftime("%Y-%m-%d"))
+    my_data=(taskname, DateSet.strftime("%Y-%m-%d"), enabled)
+    my_query = "INSERT INTO tasks VALUES (?,?,?)"
+    my_conn.execute(my_query,my_data)
+    my_conn.commit()
+    from program.tabs import filltab3
+
+    filltab3(tab)
+    return print("inserted")
 
 
 

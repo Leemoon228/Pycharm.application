@@ -69,17 +69,14 @@ style.configure(
     background="#C3E8BD",
     fontsize=14
 )
-
-
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)
-tab3 = ttk.Frame(tabControl)
+tab3 = Frame(tabControl)
 tabControl.add(tab1, text='Пример')
 tabControl.add(tab2, text='Помидорки')
 tabControl.add(tab3, text='Стикеры')
 tabControl.pack(expand=2, fill="both")
-
 
 HealthReminding = threading.Thread(target=thread_function, daemon=True)
 HealthReminding.start()  # Фоновое отображение уведомлений

@@ -12,7 +12,7 @@ from win10toast_click import ToastNotifier
 from PIL import ImageTk, Image
 import sqlite3
 import re
-
+from datetime import datetime
 
 def validate(new_val):
     return re.match("^\d{0,2}\:[012345]?[0123456789]?$", new_val) is not None
@@ -109,26 +109,42 @@ def filltab2(tab2):
 
 
 def filltab3(tab3):
+    for widget in tab3.winfo_children():
+        widget.destroy()
     conn = sqlite3.connect('tasks.db')
-    tab2canvas = tk.Canvas(tab3, width=600, height=300)
     rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS').fetchone()[0]
-    tab2canvas.grid(columnspan=3, rowspan=rowspan+2)
-    Label(tab3, text="Название").grid(row=0, column=0)
-    Label(tab3, text="Истекает до").grid(row=0, column=1)
-    Label(tab3, text="Уведомлять").grid(row=0, column=2)
+    tab3.configure(relief=FLAT, bg="#C3E8BD")
+    #create canvas in tab3 frame
+    tab2canvas = tk.Canvas(tab3, bg="#C3E8BD", relief=FLAT, highlightthickness=0)
+    tab2canvas.grid(row=1, columnspan=3, sticky='news')
+    #create scrollbar in tab3 frame
+    scroll = Scrollbar(tab3, orient="vertical", command=tab2canvas.yview, relief=FLAT)
+    scroll.grid(row=1, column=3, sticky=NS)
+    tab2canvas.configure(yscrollcommand=scroll.set)
+    l1 =Label(tab3, text="Название", width=27, bg="#C3E8BD")
+    l1.grid(row=0, column=0)
+    l2 =Label(tab3, text="Истекает до", width=27, bg="#C3E8BD")
+    l2.grid(row=0, column=1)
+    l3 =Label(tab3, text="Уведомлять", width=27, bg="#C3E8BD")
+    l3.grid(row=0, column=2)
     selection = conn.execute('SELECT * FROM TASKS')
     i=1
+    table = Frame(tab2canvas)
     for name in selection:
         for j in range(len(name)):
-            e = Entry(tab3, width=10, fg='blue')
-            e.grid(row=i, column=j)
-            if name[j]==0 or name[j]==1:
-                Checkbutton(tab3, variable=name[j]).grid(row=i, column=j)
-            else:
-             e.insert(END, name[j])
+             e = Entry(table, width=35, fg='blue', relief=tk.RIDGE)
+             e.grid(row=i, column=j)
+             if name[j]==0:
+                e.insert(END, "не уведомлять")
+             elif name[j]==1:
+                e.insert(END, "уведомлять")
+             else:
+                e.insert(END, name[j])
         i=i+1
-    tab2canvas.configure(bg='#C3E8BD')
-    createtaskbtn = Button(tab3, text="Создать задачу", command=openNewWindow(tab3))
-    createtaskbtn.grid(row=rowspan+1, column=0)
+    table.update_idletasks()
+    tab2canvas.create_window((0,0), window=table, anchor=NW)
+    tab2canvas.configure(scrollregion=tab2canvas.bbox(ALL))
+    createtaskbtn = Button(tab3, text="Создать задачу", command=lambda: openNewWindow(tab3))
+    createtaskbtn.grid(row=rowspan+1, columnspan=3)
 
 
