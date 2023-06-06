@@ -22,7 +22,7 @@ def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0)
     return
 
 
-def thread_function(delay_eyes=300, delay_body=300):
+def thread_function(delay_eyes=30, delay_body=40):
     while True:
         time.sleep(delay_eyes)
         open_eyes_healthcare_notif()
