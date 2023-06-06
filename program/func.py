@@ -211,26 +211,105 @@ def openNewWindow(tab):
     datevalid.set("Дедлайн:")
     lDate = Label(windowCanvas, textvariable=datevalid, width=30).grid(row=2, column=0, columnspan=2)
     DateSet.grid(row=3, column=0, columnspan=2)
-    lNotif = Label(windowCanvas, text="Уведомлять:", width=30).grid(row=4, column=0)
-    enabled = IntVar()
-    notify = Checkbutton(windowCanvas, variable=enabled).grid(row=4, column=1)
-    Button(newWindow, text="добавить", command=lambda: insertDB(taskname.get("1.0", END), DateSet.get_date(), enabled.get(), datevalid, tab)).grid(row=5, column=0, columnspan=2)
+    Button(newWindow, text="добавить", command=lambda: insertDB(taskname.get("1.0", END), DateSet.get_date(), datevalid, tab)).grid(row=5, column=0, columnspan=2)
 
 
-def insertDB(taskname, DateSet, enabled, datevalid, tab):
+def insertDB(taskname, DateSet, datevalid, tab):
     my_conn=sqlite3.connect('tasks.db')
     if DateSet<date.today():
         datevalid.set("Неверная дата, еще раз:")
         return print("wrong date, your date is"+DateSet.strftime("%Y-%m-%d"))
-    my_data=(taskname, DateSet.strftime("%Y-%m-%d"), enabled)
+    my_data=(taskname, DateSet.strftime("%Y-%m-%d"), 0)
     my_query = "INSERT INTO tasks VALUES (?,?,?)"
     my_conn.execute(my_query,my_data)
     my_conn.commit()
     from program.tabs import filltab3
-
     filltab3(tab)
     return print("inserted")
 
+def openEditWindow(tab, conn):
+    # Toplevel object which will
+    # be treated as a new window
+    newWindow = Toplevel(tab)
+    selection = conn.execute('SELECT NAME, ROWID FROM TASKS WHERE NOROFY = 0')
+    count = conn.execute('SELECT COUNT(ROWID) FROM TASKS WHERE NOROFY = 0').fetchone()[0]
+    options = [0]*count
+    optionsid = [0]*count
+    j=0
+    for name in selection:
+        options[j]=name[0].split()
+        optionsid[j]=name[1]
+        j+=1
+    #print(options)
+    #print(optionsid)
+    test = [0]*count
+    for i in range(len(options)):
+        test[i]=[optionsid[i],options[i]]
+    #print(test)
+    # sets the title of the
+    # Toplevel widget
+    newWindow.title("Отметить задачу!! :3")
+    newWindow.iconbitmap("leaf2.ico")
+    newWindow.resizable(False, False)
+    # sets the geometry of toplevel
+    newWindow.geometry('+%d+%d' % (650, 340))
+    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas.grid(columnspan=1)
+    Label(windowCanvas, text="Название задачи:", width=30).grid(row=0, column=0, columnspan=2)
+    clicked = StringVar()
+    drop = OptionMenu(windowCanvas, clicked, test[0], *test)
+    drop.grid(row=1, column=0)
+    submitbtn = Button(windowCanvas, text="Отметить как выполненное", width=30, command=lambda: updateDB(conn, clicked.get(), tab))
+    submitbtn.grid(row=2, column=0)
 
+def updateDB(conn, rowid, tab):
+    rowid = rowid[1:rowid.find(',')]
+    my_query="UPDATE TASKS SET NOROFY = 1 WHERE ROWID ="+rowid
+    conn.execute(my_query)
+    conn.commit()
+    from program.tabs import filltab3
+    filltab3(tab)
+    return print("updated")
 
+def openDelWindow(tab, conn):
+    # Toplevel object which will
+    # be treated as a new window
+    newWindow = Toplevel(tab)
+    selection = conn.execute('SELECT NAME, ROWID FROM TASKS')
+    count = conn.execute('SELECT COUNT(ROWID) FROM TASKS').fetchone()[0]
+    options = [0] * count
+    optionsid = [0] * count
+    j = 0
+    for name in selection:
+        options[j] = name[0].split()
+        optionsid[j] = name[1]
+        j += 1
+    test = [0] * count
+    for i in range(len(options)):
+        test[i] = [optionsid[i], options[i]]
 
+    # sets the title of the
+    # Toplevel widget
+    newWindow.title("Удалить задачу!! :3")
+    newWindow.iconbitmap("leaf2.ico")
+    newWindow.resizable(False, False)
+    # sets the geometry of toplevel
+    newWindow.geometry('+%d+%d' % (650, 340))
+    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas.grid(columnspan=1)
+    Label(windowCanvas, text="Название задачи:", width=30).grid(row=0, column=0, columnspan=2)
+    clicked = StringVar()
+    drop = OptionMenu(windowCanvas, clicked, test[0], *test)
+    drop.grid(row=1, column=0)
+    submitbtn = Button(windowCanvas, text="Удалить задачу", width=30,
+                       command=lambda: deleteDB(conn, clicked.get(), tab))
+    submitbtn.grid(row=2, column=0)
+
+def deleteDB(conn, rowid, tab):
+    rowid = rowid[1:rowid.find(',')]
+    my_query = "DELETE FROM TASKS WHERE ROWID =" + rowid
+    conn.execute(my_query)
+    conn.commit()
+    from program.tabs import filltab3
+    filltab3(tab)
+    return print("updated")
