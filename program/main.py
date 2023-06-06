@@ -15,6 +15,16 @@ import pystray
 from PIL import Image, ImageTk
 
 
+def change_threads(threads, eyes_time, body_time):
+    threads[0].do_run = False
+    threads[1].do_run = False
+    threads[0] = threading.Thread(target=lambda: thread_function_One(time_from_str(eyes_time)), daemon=True)
+    threads[1] = threading.Thread(target=lambda: thread_function_Two(time_from_str(body_time)), daemon=True)
+    threads[0].start()
+    threads[1].start()
+    notif_create("Время уведомлений изменено успешно", "")
+
+
 
 def show_window(icon, item):
     icon.stop()
@@ -54,36 +64,48 @@ tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)
 tab3 = Frame(tabControl)
-tabControl.add(tab1, text='Пример')
+tabControl.add(tab1, text='Главная')
 tabControl.add(tab2, text='Помидорки')
-tabControl.add(tab3, text='Стикеры')
+tabControl.add(tab3, text='Задачи')
 tabControl.pack(expand=2, fill="both")
 
-HealthReminding = threading.Thread(target=thread_function, daemon=True)
-HealthReminding.start()  # Фоновое отображение уведомлений
+check = (tab1.register(validate), "%P")  # Валидатор строки времени
+
+# Фоновое отображение уведомлений
+HealthRemindingOne = threading.Thread(target=thread_function_One, daemon=True)
+HealthRemindingOne.start()
+HealthRemindingTwo = threading.Thread(target=thread_function_Two, daemon=True)
+HealthRemindingTwo.start()
 
 canvas = tk.Canvas(tab1, width=600, height=300)
 canvas.grid(columnspan=3, rowspan=3)
 canvas.configure(bg='#C3E8BD')
 
-check = (tab1.register(validate), "%P")
+Time_delayed_eyes_lbl = ttk.Label(tab1, text="Время уведомления\nо разминке глаз", style="Text.TLabel", justify="left")
+Time_delayed_eyes_entry = tk.Entry(tab1, validate="key", validatecommand=check, width=5,
+                                   font=("Bahnschrift", 15), background="#C3E8BD", justify="center",
+                                   selectborderwidth="0")
+Time_delayed_eyes_entry.insert(0, "15:00")
 
-#Window GIF
-Window_lbl = ImageLabel(tab1)
+Time_delayed_body_lbl = ttk.Label(tab1, text="Время уведомления\nо разминке тела", style="Text.TLabel", justify="left")
+Time_delayed_body_entry = tk.Entry(tab1, validate="key", validatecommand=check, width=5,
+                                   font=("Bahnschrift", 15), background="#C3E8BD", justify="center",
+                                   selectborderwidth="0")
+Time_delayed_body_entry.insert(0, "30:00")
+
+# Window GIF
+Window_lbl = ImageLabel(tab1, bg="#C3E8BD")
 Window_lbl.grid(row=0, column=2, columnspan=3, sticky="e", padx=5)
-Window_lbl.configure(bg="#C3E8BD")
 Window_lbl.load('window.gif')
 
 # Buttons
 example_btn = tk.Button(tab1, text="Проверка работы\nуведомлений", command=lambda: notif_create("Проверка уведомления",
-                                                 "Если вы увидели это увдомление, то у вас всё работает прекрасно"),
+                                                                                                "Если вы увидели это уведомление, то у вас всё работает прекрасно"),
                         font="Bahnschrift",
                         bg="#2e5339",
                         fg="#C3E8BD",
                         height=2,
                         width=15)
-
-
 
 Time_delayed_lbl = ttk.Label(tab1, text="Время до\nуведомления", style="Text.TLabel", justify="center")
 Time_delayed_entry = tk.Entry(tab1, validate="key", validatecommand=check, width=5,
@@ -97,12 +119,26 @@ button1 = tk.Button(text='Своё уведомление',
                                                  delay=time_from_str(Time_delayed_entry.get())),
                     font="Bahnschrift", bg="#2e5339", fg="#C3E8BD")
 
+button_threads = tk.Button(tab1, text="Сменить время\nуведомлений",
+                           font="Bahnschrift",
+                           bg="#2e5339",
+                           fg="#C3E8BD",
+                           height=2,
+                           width=15,
+                           command=lambda: change_threads([HealthRemindingOne, HealthRemindingTwo], Time_delayed_eyes_entry.get(), Time_delayed_body_entry.get()))
 
 canvas.create_window(90, 190, window=Time_delayed_lbl)
 canvas.create_window(90, 230, window=Time_delayed_entry)
 canvas.create_window(90, 270, window=button1)
 canvas.create_window(300, 260, window=example_btn)
 
+canvas.create_window(150, 28, window=Time_delayed_eyes_lbl)
+canvas.create_window(35, 30, window=Time_delayed_eyes_entry)
+
+canvas.create_window(150, 78, window=Time_delayed_body_lbl)
+canvas.create_window(35, 80, window=Time_delayed_body_entry)
+
+canvas.create_window(90, 132, window=button_threads)
 
 filltab2(tab2)
 filltab3(tab3)

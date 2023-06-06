@@ -25,7 +25,7 @@ def filltab2(tab2):
     heading_lbl.grid(column=1, row=0, sticky="n", pady="2")
 
     TimeDuration_lbl = ttk.Label(tab2, text="Длительность \nработы", style="Text.TLabel")
-    TimeDuration_lbl.grid(column=0, row=0, sticky="nw", pady="65")
+    TimeDuration_lbl.grid(column=0, row=0, sticky="nw", pady="65", padx=2)
     TimeDuration_entry = tk.Entry(tab2, validate="key", validatecommand=check, width=5,
                                   font=("Bahnschrift", 15), background="#C3E8BD", justify="center",
                                   selectborderwidth="0")
@@ -33,7 +33,7 @@ def filltab2(tab2):
     TimeDuration_entry.grid(column=0, row=0, rowspan=2, sticky="nw", pady="105", padx="16")
 
     TimeBreak_lbl = ttk.Label(tab2, text="Длительность \nперерыва", style="Text.TLabel")
-    TimeBreak_lbl.grid(column=0, row=0, rowspan=2, sticky="sw", pady="50")
+    TimeBreak_lbl.grid(column=0, row=0, rowspan=2, sticky="sw", pady="50", padx=2)
     TimeSleeping_entry = tk.Entry(tab2, validate="key", validatecommand=check, width=5,
                                   font=("Bahnschrift", 15), background="#C3E8BD", justify="center",
                                   selectborderwidth="0")

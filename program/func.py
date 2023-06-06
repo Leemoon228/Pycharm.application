@@ -17,6 +17,19 @@ import re
 from datetime import datetime
 notif_icon_path = "leaf3.ico"
 
+def thread_function_One(delay_eyes=600):
+    t = threading.currentThread()
+    while getattr(t, "do_run", True):
+        time.sleep(delay_eyes)
+        open_eyes_healthcare_notif()
+
+
+def thread_function_Two(delay_body=300):
+    t = threading.currentThread()
+    while getattr(t, "do_run", True):
+        time.sleep(delay_body)
+        open_body_healthcare_notif()
+
 
 def validate(new_val):
     return re.match("^\d{0,2}\:[012345]?[0123456789]?$", new_val) is not None
@@ -133,14 +146,6 @@ def time_from_str(time_string):
     return time_in_seconds
 
 
-def thread_function(delay_eyes=300, delay_body=600):
-    while True:
-        time.sleep(delay_eyes)
-        open_eyes_healthcare_notif()
-        time.sleep(delay_body)
-        open_body_healthcare_notif()
-
-
 def open_eyes_healthcare_notif():
     def open_eyes_healthcare():
         website = "https://www.wikihow.com/Exercise-Your-Eyes"
@@ -150,8 +155,8 @@ def open_eyes_healthcare_notif():
             print("Failed to open the download page.")
 
     toast = ToastNotifier()
-    toast.show_toast("Please make your eyes healthy",
-                     "Look into distance, then take a close loot at ur finger, close your eyes fo 20s",
+    toast.show_toast("Пожалуйста дайте вашим глазам отдохнуть",
+                     "Взгляните в даль, потом на палец, и закройте глаза на 20 секунд",
                      duration=8,
                      callback_on_click=open_eyes_healthcare,
                      threaded=True,
