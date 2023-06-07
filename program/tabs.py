@@ -1,18 +1,9 @@
-import concurrent.futures
-
-from win10toast_click import ToastNotifier
-import threading
-import time
-import webbrowser
-from program.func import *
+from func import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from win10toast_click import ToastNotifier
 from PIL import ImageTk, Image
 import sqlite3
-
-from datetime import datetime
 
 
 def filltab2(tab2):

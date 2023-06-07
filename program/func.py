@@ -12,10 +12,8 @@ import tkcalendar
 import tkinter as tk
 from PIL import Image, ImageTk
 from itertools import count
-from tkcalendar import Calendar
 from datetime import date
 import re
-from datetime import datetime
 notif_icon_path = "leaf3.ico"
 
 
@@ -251,7 +249,7 @@ def insertDB(taskname, DateSet, datevalid, tab):
     my_query = "INSERT INTO tasks VALUES (?,?,?)"
     my_conn.execute(my_query,my_data)
     my_conn.commit()
-    from program.tabs import filltab3
+    from tabs import filltab3
     filltab3(tab)
     return print("inserted")
 
@@ -295,7 +293,7 @@ def updateDB(conn, rowid, tab):
     my_query="UPDATE TASKS SET NOROFY = 1 WHERE ROWID ="+rowid
     conn.execute(my_query)
     conn.commit()
-    from program.tabs import filltab3
+    from tabs import filltab3
     filltab3(tab)
     return print("updated")
 
@@ -339,6 +337,6 @@ def deleteDB(conn, rowid, tab):
     my_query = "DELETE FROM TASKS WHERE ROWID =" + rowid
     conn.execute(my_query)
     conn.commit()
-    from program.tabs import filltab3
+    from tabs import filltab3
     filltab3(tab)
     return print("updated")

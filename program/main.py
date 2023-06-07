@@ -1,18 +1,28 @@
 # -*- coding: cp1251 -*-
-# checkout 3
-# test string
-# import requests
-from program.func import *
-from program.tabs import filltab2, filltab3
-import threading
+import tkcalendar
+import re
 import time
+import webbrowser
+from func import *
+from tabs import filltab2, filltab3
+import threading
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from win10toast_click import ToastNotifier
-from pystray import MenuItem as item
 import pystray
-from PIL import Image, ImageTk
+from sqlite3 import Error
+from tkinter import *
+from tkinter.ttk import *
+from threading import Timer
+from itertools import count
+from datetime import date
+from win10toast_click import ToastNotifier
+from func import *
+import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+from PIL import Image
+import sqlite3
 
 
 def change_threads(threads, eyes_time, body_time):
@@ -47,7 +57,7 @@ def quit_window(icon, item):
 
 # Здесь начинается окно
 root = tk.Tk()
-root.title('Reminder App v0.02')
+root.title('Reminder App v0.88')
 root.geometry('+%d+%d' % (650, 340))
 root.iconbitmap("leaf2.ico")
 root.resizable(False, False)
