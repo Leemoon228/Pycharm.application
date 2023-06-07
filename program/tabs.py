@@ -130,5 +130,6 @@ def filltab3(tab3):
     deltaskbtn = Button(tab3, text="Удалить задачу", font=("Bahnschrift", 12), bg="#2e5339",
                           fg="#C3E8BD", command=lambda: openDelWindow(tab3, conn))
     deltaskbtn.grid(row=rowspan+1, column=1, rowspan=2)
+    return conn
 
 

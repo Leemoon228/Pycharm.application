@@ -42,15 +42,16 @@ def show_window(icon, item):
     root.focus_force()
 
 
-def hide_window():
+def hide_window(conn):
     root.withdraw()
     image = Image.open("leaf2.ico")
-    menu = (pystray.MenuItem('Show', show_window, default=True), pystray.MenuItem('Quit', quit_window))
+    menu = (pystray.MenuItem('Show', show_window, default=True), pystray.MenuItem('Quit', lambda: quit_window(icon, root, conn=conn)))
     icon = pystray.Icon("name", image, "Reminder App", menu)
     icon.run()
 
 
-def quit_window(icon, item):
+def quit_window(icon, item, conn):
+    conn.close()
     icon.stop()
     root.destroy()
 
@@ -158,7 +159,7 @@ canvas.create_window(35, 80, window=Time_delayed_body_entry)
 canvas.create_window(90, 132, window=button_threads)
 
 filltab2(tab2)
-filltab3(tab3)
-root.protocol('WM_DELETE_WINDOW', hide_window)
+conn = filltab3(tab3)
+root.protocol('WM_DELETE_WINDOW', lambda: hide_window(conn))
 
 root.mainloop()
