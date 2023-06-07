@@ -47,7 +47,7 @@ def filltab2(tab2):
                                      justify="center")
     CurrentTimerTime_lbl.grid(column=1, columnspan=2, row=0, pady="50", padx="175", sticky="ne")
 
-    image_height, image_width = 95, 100
+    image_height, image_width = 93, 100
     tomato_img = ImageTk.PhotoImage(
         Image.open("fingtomato.png").resize((image_width + 4, image_height + 4), Image.ANTIALIAS))
 
@@ -100,24 +100,24 @@ def filltab3(tab3):
     rowspan = conn.execute('SELECT COUNT(ROWID) FROM TASKS').fetchone()[0]
     tab3.configure(relief=FLAT, bg="#C3E8BD")
     #create canvas in tab3 frame
-    tab2canvas = tk.Canvas(tab3, bg="#C3E8BD", relief=FLAT, highlightthickness=0, height=250)
+    tab2canvas = tk.Canvas(tab3, bg="#C3E8BD", relief=FLAT, highlightthickness=0, height=240)
     tab2canvas.grid(row=1, columnspan=3, sticky='news')
     #create scrollbar in tab3 frame
     scroll = Scrollbar(tab3, orient="vertical", command=tab2canvas.yview, relief=FLAT)
     scroll.grid(row=1, column=3, sticky=NS)
     tab2canvas.configure(yscrollcommand=scroll.set)
-    l1 =Label(tab3, text="Название", width=27, bg="#C3E8BD")
+    l1 =Label(tab3, text="Название", width=21, bg="#C3E8BD", font=("Bahnschrift", 12))
     l1.grid(row=0, column=0)
-    l2 =Label(tab3, text="Дедлайн", width=27, bg="#C3E8BD")
+    l2 =Label(tab3, text="Дедлайн", width=21, bg="#C3E8BD", font=("Bahnschrift", 12))
     l2.grid(row=0, column=1)
-    l3 =Label(tab3, text="Выполнено:", width=27, bg="#C3E8BD")
+    l3 =Label(tab3, text="Выполнено:", width=21, bg="#C3E8BD", font=("Bahnschrift", 12))
     l3.grid(row=0, column=2)
     selection = conn.execute('SELECT * FROM TASKS ORDER BY NOROFY ASC')
     i=1
     table = Frame(tab2canvas)
     for name in selection:
         for j in range(len(name)):
-             e = Entry(table, width=35, fg='blue', relief=tk.RIDGE)
+             e = MyEntry(table, width=22, fg='blue', relief=tk.RIDGE, font="Bahnschrift", foreground="Yellow")
              e.grid(row=i, column=j)
              if name[j]==0:
                 e.insert(END, "Не выполнено")
@@ -125,15 +125,19 @@ def filltab3(tab3):
                 e.insert(END, "Выполнено")
              else:
                 e.insert(END, name[j])
+             e.configure(state="disabled")
         i=i+1
     table.update_idletasks()
     tab2canvas.create_window((0,0), window=table, anchor=NW)
     tab2canvas.configure(scrollregion=tab2canvas.bbox(ALL))
-    createtaskbtn = Button(tab3, text="Создать задачу", command=lambda: openNewWindow(tab3))
+    createtaskbtn = Button(tab3, text="Создать задачу", font=("Bahnschrift", 12), bg="#2e5339", fg="#C3E8BD",
+                           command=lambda: openNewWindow(tab3))
     createtaskbtn.grid(row=rowspan+1, column=0)
-    edittaskbtn = Button(tab3, text="Отметить задачу выполненной", command=lambda: openEditWindow(tab3, conn))
+    edittaskbtn = Button(tab3, text="Отметить выполненной", font=("Bahnschrift", 12), bg="#2e5339", fg="#C3E8BD",
+                         command=lambda: openEditWindow(tab3, conn))
     edittaskbtn.grid(row=rowspan+1, column=2)
-    deltaskbtn = Button(tab3, text="удалить задачу", command=lambda: openDelWindow(tab3, conn))
-    deltaskbtn.grid(row=rowspan+1, column=1)
+    deltaskbtn = Button(tab3, text="Удалить задачу", font=("Bahnschrift", 12), bg="#2e5339",
+                          fg="#C3E8BD", command=lambda: openDelWindow(tab3, conn))
+    deltaskbtn.grid(row=rowspan+1, column=1, rowspan=2)
 
 

@@ -60,6 +60,13 @@ style.configure(
     background="#C3E8BD",
     fontsize=14
 )
+style = ttk.Style()
+style.configure(
+    "TMenubutton",
+    font="Bahnschrift",
+    background="#C3E8BD",
+    fontsize=10
+)
 tabControl = ttk.Notebook(root)
 tab1 = ttk.Frame(tabControl)
 tab2 = ttk.Frame(tabControl)

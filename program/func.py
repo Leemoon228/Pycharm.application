@@ -6,6 +6,7 @@ import sqlite3
 from sqlite3 import Error
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import ttk
 from threading import Timer
 import tkcalendar
 import tkinter as tk
@@ -17,14 +18,15 @@ import re
 from datetime import datetime
 notif_icon_path = "leaf3.ico"
 
-def thread_function_One(delay_eyes=600):
+
+def thread_function_One(delay_eyes=300):
     t = threading.currentThread()
     while getattr(t, "do_run", True):
         time.sleep(delay_eyes)
         open_eyes_healthcare_notif()
 
 
-def thread_function_Two(delay_body=300):
+def thread_function_Two(delay_body=1800):
     t = threading.currentThread()
     while getattr(t, "do_run", True):
         time.sleep(delay_body)
@@ -120,6 +122,23 @@ class ImageLabel(tk.Label):
             self.after(self.delay, self.next_frame)
 
 
+class MyEntry(tk.Entry):
+    def __init__(self, master=None, **kw):
+        super().__init__(master, **kw)
+        # make it disabled, but with black on white like in normal state
+        self.config(state='disabled', disabledforeground='black', disabledbackground='white')
+
+    def insert(self, pos, value):
+        self.config(state='normal')
+        super().insert(pos, value)
+        self.config(state='disabled')
+
+    def delete(self, first, last=None):
+        self.config(state='normal')
+        super().delete(first, last)
+        self.config(state='disabled')
+
+
 def notif_create(title, description, duration=10, icon=notif_icon_path, delay=0):
     toast = ToastNotifier()
     if delay != 0:
@@ -206,17 +225,21 @@ def openNewWindow(tab):
     newWindow.resizable(False, False)
     # sets the geometry of toplevel
     newWindow.geometry('+%d+%d' % (650, 340))
-    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas = Canvas(newWindow, width=600, height=300, bg="#C3E8BD", relief=FLAT)
     windowCanvas.grid(rowspan=5, columnspan=1)
-    lName = Label(windowCanvas, text="Название задачи:", width=30).grid(row=0,column=0, columnspan=2)
+    Label(windowCanvas, text="Название задачи:", width=20, background="#C3E8BD", style="Text.TLabel",
+          anchor="center").grid(row=0, column=0, columnspan=2, pady=2)
     taskname = Text(windowCanvas, width=30, height=1)
     taskname.grid(row=1, column=0, columnspan=2)
-    DateSet = tkcalendar.DateEntry(windowCanvas, selectmode='day')
+    DateSet = tkcalendar.DateEntry(windowCanvas, selectmode='day', font=("Bahnschrift", 15), background="#C3E8BD", foreground="Black",
+                                   justify="center", selectborderwidth="0")
     datevalid = StringVar()
     datevalid.set("Дедлайн:")
-    lDate = Label(windowCanvas, textvariable=datevalid, width=30).grid(row=2, column=0, columnspan=2)
+    Label(windowCanvas, textvariable=datevalid, width=20, background="#C3E8BD", style="Text.TLabel",
+          anchor="center").grid(row=2, column=0, columnspan=2)
     DateSet.grid(row=3, column=0, columnspan=2)
-    Button(newWindow, text="добавить", command=lambda: insertDB(taskname.get("1.0", END), DateSet.get_date(), datevalid, tab)).grid(row=5, column=0, columnspan=2)
+    tk.Button(windowCanvas, text="добавить", width=15, font="Bahnschrift", bg="#2e5339", fg="#C3E8BD",
+           command=lambda: insertDB(taskname.get("1.0", END), DateSet.get_date(), datevalid, tab)).grid(row=5, column=0, columnspan=2)
 
 
 def insertDB(taskname, DateSet, datevalid, tab):
@@ -258,13 +281,13 @@ def openEditWindow(tab, conn):
     newWindow.resizable(False, False)
     # sets the geometry of toplevel
     newWindow.geometry('+%d+%d' % (650, 340))
-    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas = Canvas(newWindow, width=600, height=300, bg="#C3E8BD")
     windowCanvas.grid(columnspan=1)
-    Label(windowCanvas, text="Название задачи:", width=30).grid(row=0, column=0, columnspan=2)
+    Label(windowCanvas, text="Название задачи:", font=("Bahnschrift", 12), width=15, background="#C3E8BD").grid(row=0, column=0, columnspan=2)
     clicked = StringVar()
-    drop = OptionMenu(windowCanvas, clicked, test[0], *test)
+    drop = ttk.OptionMenu(windowCanvas, clicked, test[0], *test, style="TMenubutton")
     drop.grid(row=1, column=0)
-    submitbtn = Button(windowCanvas, text="Отметить как выполненное", width=30, command=lambda: updateDB(conn, clicked.get(), tab))
+    submitbtn = tk.Button(windowCanvas, text="Выполнена", width=15, font="Bahnschrift", bg="#2e5339", fg="#C3E8BD", command=lambda: updateDB(conn, clicked.get(), tab))
     submitbtn.grid(row=2, column=0)
 
 def updateDB(conn, rowid, tab):
@@ -300,13 +323,14 @@ def openDelWindow(tab, conn):
     newWindow.resizable(False, False)
     # sets the geometry of toplevel
     newWindow.geometry('+%d+%d' % (650, 340))
-    windowCanvas = Canvas(newWindow, width=600, height=300)
+    windowCanvas = Canvas(newWindow, width=600, height=300, bg="#C3E8BD")
     windowCanvas.grid(columnspan=1)
-    Label(windowCanvas, text="Название задачи:", width=30).grid(row=0, column=0, columnspan=2)
+    Label(windowCanvas, text="Название задачи:", font=("Bahnschrift", 12), width=25, background="#C3E8BD", anchor="center").grid(row=0, column=0, columnspan=2, pady=2)
     clicked = StringVar()
-    drop = OptionMenu(windowCanvas, clicked, test[0], *test)
+
+    drop = ttk.OptionMenu(windowCanvas, clicked, test[0], *test, style="TMenubutton")
     drop.grid(row=1, column=0)
-    submitbtn = Button(windowCanvas, text="Удалить задачу", width=30,
+    submitbtn = tk.Button(windowCanvas, text="Удалить задачу", width=15, font="Bahnschrift", bg="#2e5339", fg="#C3E8BD",
                        command=lambda: deleteDB(conn, clicked.get(), tab))
     submitbtn.grid(row=2, column=0)
 
